@@ -1,0 +1,77 @@
+{% extends "base_app.html" %}
+
+{% block top_actions %}
+  <form class="modePills" method="POST" action="{{ url_for('chat.chat_mode') }}">
+    <button class="pill {{ 'active' if mode == 'sherlock' else '' }}" name="mode" value="sherlock" type="submit">
+      Sherlock
+    </button>
+    <button class="pill {{ 'active' if mode == 'assistant' else '' }}" name="mode" value="assistant" type="submit">
+      Assistant
+    </button>
+  </form>
+{% endblock %}
+
+{% block content %}
+  <section class="card span12 chatShell" aria-label="Chat conversation">
+    <div class="chatMeta">
+      <div class="subtle">Tip: share a bit about your day and I’ll adapt.</div>
+    </div>
+
+    <div class="chatLog" data-chat-log>
+      {% if messages and messages|length > 0 %}
+        {% for m in messages %}
+          <div class="bubbleRow {{ 'me' if m.role == 'user' else 'bot' }}">
+            <div class="bubble {{ 'bubbleMe' if m.role == 'user' else 'bubbleBot' }}">
+              <div class="bubbleRole">{{ 'You' if m.role == 'user' else 'Sherlock' }}</div>
+              <div class="bubbleText">{{ m.content }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="emptyState">
+          Start with something real. Example: “I keep procrastinating and my tasks feel heavy.”
+        </div>
+      {% endif %}
+    </div>
+
+    <form class="chatComposer" method="POST" action="{{ url_for('chat.chat_send') }}">
+      <button class="btn btnGhost btnSmall micBtn" type="button" data-mic aria-label="Microphone">🎙</button>
+      <input name="message" placeholder="Type a message… (Enter to send)" autocomplete="off" required />
+      <button class="btn btnPrimary btnSmall" type="submit">Send</button>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const micBtn = document.querySelector("[data-mic]");
+    const chatInput = document.querySelector("input[name='message']");
+    const chatForm = document.querySelector(".chatComposer");
+    
+    if (micBtn && chatInput && (window.SpeechRecognition || window.webkitSpeechRecognition)) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        
+        micBtn.addEventListener("click", () => {
+            micBtn.style.color = "var(--primary)";
+            recognition.start();
+        });
+        
+        recognition.addEventListener("result", (event) => {
+            const transcript = event.results[0][0].transcript;
+            chatInput.value = transcript;
+            chatForm.submit();
+        });
+        
+        recognition.addEventListener("end", () => {
+            micBtn.style.color = "";
+        });
+    } else if (micBtn) {
+        micBtn.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base_app.html" %}
+
+{% block content %}
+  <div class="dashGrid">
+    <section class="card span7" aria-label="Preferences">
+      <div class="cardHeader">
+        <h3>Preferences</h3>
+        <span class="subtle">Theme & UI</span>
+      </div>
+
+      <div class="settingsGrid">
+        <div class="settingItem">
+          <div class="settingTitle">Theme</div>
+          <div class="subtle">Choose a look for the dashboard.</div>
+        </div>
+        <div class="settingItem settingActions">
+          <button class="btn btnGhost btnSmall" type="button" data-theme-btn="stripe">A) Stripe-like</button>
+          <button class="btn btnGhost btnSmall" type="button" data-theme-btn="linear">B) Linear-like</button>
+          <button class="btn btnGhost btnSmall" type="button" data-theme-btn="apple">C) Apple-like</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="settingsGrid">
+        <div class="settingItem">
+          <div class="settingTitle">Data controls</div>
+          <div class="subtle">Manage local data stored on this device.</div>
+        </div>
+        <div class="settingItem settingActions">
+          <a class="btn btnGhost btnSmall" href="{{ url_for('settings.settings_export') }}">Export JSON</a>
+          <form method="POST" action="{{ url_for('settings.settings_clear_chat') }}">
+            <button class="btn btnDanger btnSmall" type="submit">Clear chat</button>
+          </form>
+          <form method="POST" action="{{ url_for('settings.settings_clear_completed') }}">
+            <button class="btn btnDanger btnSmall" type="submit">Clear completed tasks</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="card span5" aria-label="Account">
+      <div class="cardHeader">
+        <h3>Account</h3>
+        <span class="subtle">Signed in</span>
+      </div>
+      <div class="accountBox">
+        <div class="accountRow">
+          <div class="subtle">Username</div>
+          <div><b>{{ name }}</b></div>
+        </div>
+        <div class="btnRow">
+          <a class="btn btnGhost" href="{{ url_for('auth.logout') }}">Logout</a>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+

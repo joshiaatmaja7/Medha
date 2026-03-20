@@ -1,0 +1,94 @@
+{% extends "base_app.html" %}
+
+{% block content %}
+  <section class="card span12" aria-label="Tasks">
+    <div class="cardHeader">
+      <h3>Your tasks</h3>
+      <span class="subtle">{{ open_tasks|length }} open · {{ completed_tasks|length }} completed</span>
+    </div>
+
+    <div class="tasksToolbar">
+      <form class="tasksSearch" method="GET" action="{{ url_for('tasks.tasks') }}">
+        <input name="q" value="{{ q }}" placeholder="Search tasks…" autocomplete="off" />
+        <input type="hidden" name="filter" value="{{ filter }}" />
+        <button class="btn btnGhost btnSmall" type="submit">Search</button>
+      </form>
+
+      <div class="modePills">
+        <a class="pill {{ 'active' if filter == 'open' else '' }}" href="{{ url_for('tasks.tasks', filter='open', q=q) }}">Open</a>
+        <a class="pill {{ 'active' if filter == 'completed' else '' }}" href="{{ url_for('tasks.tasks', filter='completed', q=q) }}">Completed</a>
+        <a class="pill {{ 'active' if filter == 'all' else '' }}" href="{{ url_for('tasks.tasks', filter='all', q=q) }}">All</a>
+      </div>
+    </div>
+
+    <form class="stack" method="POST" action="{{ url_for('tasks.add_task') }}">
+      <label for="title">Add a task</label>
+      <input id="title" name="title" placeholder="e.g. Write 3 bullet summary for project update" required>
+      <div class="row">
+        <div>
+          <label for="priority">Priority</label>
+          <select id="priority" name="priority" class="select">
+            <option value="2">P0 (urgent)</option>
+            <option value="1" selected>P1 (important)</option>
+            <option value="0">P2 (normal)</option>
+          </select>
+        </div>
+      </div>
+      <div class="btnRow">
+        <button class="btn btnPrimary" type="submit">Add task</button>
+      </div>
+    </form>
+  </section>
+
+  <div class="dashGrid">
+    <section class="card span12" aria-label="Task list">
+      <div class="cardHeader">
+        <h3>
+          {% if filter == 'open' %}Open{% elif filter == 'completed' %}Completed{% else %}All{% endif %}
+          tasks
+        </h3>
+        <span class="subtle">{{ filtered_tasks|length }} result(s)</span>
+      </div>
+
+      {% if filtered_tasks and filtered_tasks|length > 0 %}
+        <div class="tasks">
+          {% for t in filtered_tasks %}
+            <div class="task">
+              <div class="taskLeft">
+                <form method="POST" action="{{ url_for('tasks.toggle_task', task_id=t.id) }}">
+                  <button class="checkBtn {{ 'checked' if t.completed else '' }}" type="submit" aria-label="Toggle completed"></button>
+                </form>
+                <div>
+                  <div class="taskTitleRow">
+                    <span class="prio prio{{ t.priority or 0 }}">P{{ 2 - (t.priority or 0) }}</span>
+                    <p class="taskTitle {{ 'done' if t.completed else '' }}">{{ t.title }}</p>
+                  </div>
+                  <div class="taskMeta">
+                    {% if t.completed %}
+                      Completed {{ (t.completed_at or t.created_at).strftime('%b %d') }}
+                    {% else %}
+                      Added {{ t.created_at.strftime('%b %d') }}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <form class="prioForm" method="POST" action="{{ url_for('tasks.set_priority', task_id=t.id, filter=filter, q=q) }}">
+                <select name="priority" class="select selectSmall" onchange="this.form.submit()">
+                  <option value="2" {{ 'selected' if (t.priority or 0) == 2 else '' }}>P0</option>
+                  <option value="1" {{ 'selected' if (t.priority or 0) == 1 else '' }}>P1</option>
+                  <option value="0" {{ 'selected' if (t.priority or 0) == 0 else '' }}>P2</option>
+                </select>
+              </form>
+              <form method="POST" action="{{ url_for('tasks.delete_task', task_id=t.id) }}">
+                <button class="btn btnDanger btnSmall" type="submit">Delete</button>
+              </form>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="emptyState">No tasks found. Try a different search.</div>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}
+

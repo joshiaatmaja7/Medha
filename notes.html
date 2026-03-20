@@ -1,0 +1,72 @@
+{% extends "base_app.html" %}
+
+{% block content %}
+  <div class="dashGrid notesGrid">
+    <section class="card span4" aria-label="Notes list">
+      <div class="cardHeader">
+        <h3>All notes</h3>
+        <form method="POST" action="{{ url_for('notes.notes_new') }}">
+          <button class="btn btnPrimary btnSmall" type="submit">New</button>
+        </form>
+      </div>
+
+      <div class="noteList">
+        {% for n in notes %}
+          <a class="noteItem {{ 'active' if current and current.id == n.id else '' }}" href="{{ url_for('notes.notes_edit', note_id=n.id) }}">
+            <div class="noteTitle">{{ n.title }}</div>
+            <div class="subtle">Updated {{ n.updated_at.strftime('%b %d') }}</div>
+          </a>
+        {% endfor %}
+        {% if not notes or notes|length == 0 %}
+          <div class="emptyState">No notes yet. Create your first note.</div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="card span8" aria-label="Editor">
+      {% if current %}
+        <div class="cardHeader">
+          <h3>Edit</h3>
+          <form method="POST" action="{{ url_for('notes.notes_delete', note_id=current.id) }}">
+            <button class="btn btnDanger btnSmall" type="submit">Delete</button>
+          </form>
+        </div>
+
+        <form class="notesEditor" method="POST" action="{{ url_for('notes.notes_save', note_id=current.id) }}">
+          <label for="noteTitle">Title</label>
+          <input id="noteTitle" name="title" value="{{ current.title }}" required />
+
+          <label for="noteBody">Markdown</label>
+          <textarea id="noteBody" name="content_md" class="notesTextarea" placeholder="# Heading&#10;&#10;- bullet" required>{{ current.content_md }}</textarea>
+
+          <div class="btnRow">
+            <button class="btn btnPrimary" type="submit">Save</button>
+          </div>
+        </form>
+
+        <div class="notePreviewWrap">
+          <div class="cardHeader">
+            <h3>Preview</h3>
+            <span class="subtle">Basic Markdown</span>
+          </div>
+          <div class="notePreview" data-md-preview></div>
+        </div>
+      {% else %}
+        <div class="emptyState">Select a note to edit, or create a new one.</div>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}
+
+<h2>Notes</h2>
+
+<form method="POST">
+  <input name="content">
+  <button>Add Note</button>
+</form>
+
+<ul>
+  {% for note in notes %}
+    <li>{{ note.content }}</li>
+  {% endfor %}
+</ul>

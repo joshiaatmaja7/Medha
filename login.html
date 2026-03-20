@@ -1,0 +1,29 @@
+{% extends "base_auth.html" %}
+
+{% block content %}
+  <div class="authHeader">
+    <h2>Welcome back</h2>
+    <p>Log in to Medha AI Productivity App.</p>
+  </div>
+
+  {% if error %}
+    <div class="alert">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" action="{{ url_for('auth.login_post') }}">
+    <label for="username">Username</label>
+    <input id="username" name="username" placeholder="Enter your username" autocomplete="username" required>
+
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+
+    <div class="btnRow">
+      <button class="btn btnPrimary" type="submit">Login</button>
+      <a class="btn btnGhost" href="{{ url_for('auth.signup') }}">Create account</a>
+    </div>
+  </form>
+
+  <div class="authLinks">
+    Tip: You’ll stay logged in until you logout.
+  </div>
+{% endblock %}

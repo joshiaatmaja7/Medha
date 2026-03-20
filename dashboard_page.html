@@ -1,0 +1,71 @@
+{% extends "base_app.html" %}
+
+{% block content %}
+  <section class="stats" aria-label="Overview">
+    <div class="stat">
+      <div class="kpi">{{ total_tasks }}</div>
+      <div class="label">Total tasks</div>
+    </div>
+    <div class="stat">
+      <div class="kpi">{{ open_tasks }}</div>
+      <div class="label">Next to do</div>
+    </div>
+    <div class="stat">
+      <div class="kpi">{{ completed_recent|length }}</div>
+      <div class="label">Recently completed</div>
+    </div>
+  </section>
+
+  <div class="dashGrid">
+    <section class="card span7" aria-label="Quick actions">
+      <div class="cardHeader">
+        <h3>Quick actions</h3>
+        <span class="subtle">Jump where you need</span>
+      </div>
+      <div class="quickActions">
+        <a class="qa" href="{{ url_for('tasks.tasks') }}">
+          <div class="qaTitle">Plan tasks</div>
+          <div class="subtle">Add, complete, and review</div>
+        </a>
+        <a class="qa" href="{{ url_for('chat.chat') }}">
+          <div class="qaTitle">Sherlock Mode chat</div>
+          <div class="subtle">Clarity & focus, detective-style</div>
+        </a>
+        <a class="qa" href="{{ url_for('mindmap.mindmap') }}">
+          <div class="qaTitle">Mind map</div>
+          <div class="subtle">Capture ideas visually</div>
+        </a>
+        <a class="qa" href="{{ url_for('settings.settings') }}">
+          <div class="qaTitle">Settings</div>
+          <div class="subtle">Theme + account</div>
+        </a>
+      </div>
+    </section>
+
+    <section class="card span5" aria-label="Recently completed">
+      <div class="cardHeader">
+        <h3>Recently completed</h3>
+        <a class="btn btnGhost btnSmall" href="{{ url_for('tasks.tasks') }}">Open tasks</a>
+      </div>
+
+      {% if completed_recent and completed_recent|length > 0 %}
+        <div class="tasks">
+          {% for t in completed_recent %}
+            <div class="task">
+              <div class="taskLeft">
+                <div class="checkBtn checked" aria-hidden="true"></div>
+                <div>
+                  <p class="taskTitle done">{{ t.title }}</p>
+                  <div class="taskMeta">Completed {{ (t.completed_at or t.created_at).strftime('%b %d') }}</div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="emptyState">No completed tasks yet.</div>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}
+

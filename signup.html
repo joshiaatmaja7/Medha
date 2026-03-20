@@ -1,0 +1,29 @@
+{% extends "base_auth.html" %}
+
+{% block content %}
+  <div class="authHeader">
+    <h2>Create your account</h2>
+    <p>Start organizing your tasks and notes.</p>
+  </div>
+
+  {% if error %}
+    <div class="alert">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" action="{{ url_for('auth.signup') }}">
+    <label for="username">Username</label>
+    <input id="username" name="username" placeholder="Pick a username" autocomplete="username" required>
+
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" placeholder="Create a password" autocomplete="new-password" required>
+
+    <div class="btnRow">
+      <button class="btn btnPrimary" type="submit">Signup</button>
+      <a class="btn btnGhost" href="{{ url_for('auth.login') }}">Back to login</a>
+    </div>
+  </form>
+
+  <div class="authLinks">
+    Already have an account? <a href="{{ url_for('auth.login') }}">Login</a>
+  </div>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title or "Medha AI Productivity App" }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+  </head>
+  <body>
+    <div class="main">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brandMark">M</div>
+          <div>
+            <h2>Medha AI</h2>
+            <p>Productivity App</p>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a class="{{ 'active' if active_page == 'dashboard' else '' }}" href="{{ url_for('dashboard.dashboard') }}">Dashboard <span>⌂</span></a>
+          <a class="{{ 'active' if active_page == 'tasks' else '' }}" href="{{ url_for('tasks.tasks') }}">Tasks <span>✓</span></a>
+          <a class="{{ 'active' if active_page == 'chat' else '' }}" href="{{ url_for('chat.chat') }}">Chat <span>AI</span></a>
+          <a class="{{ 'active' if active_page == 'mindmap' else '' }}" href="{{ url_for('mindmap.mindmap') }}">Mind Map <span>🕸</span></a>
+          <a class="{{ 'active' if active_page == 'focus' else '' }}" href="{{ url_for('focus') }}">Focus <span>⏱</span></a>
+          <a class="{{ 'active' if active_page == 'settings' else '' }}" href="{{ url_for('settings.settings') }}">Settings <span>⚙</span></a>
+          <a href="{{ url_for('auth.logout') }}">Logout <span>↩</span></a>
+        </nav>
+
+        <div class="sidebarFooter">
+          Signed in as <b>{{ name }}</b>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="page">
+          <div class="topbar">
+            <div class="titleBlock">
+              <h1>{{ page_heading or "Dashboard" }}</h1>
+              {% if page_subtitle %}
+                <p class="subtle">{{ page_subtitle }}</p>
+              {% endif %}
+            </div>
+
+            <div class="topActions">
+              {% block top_actions %}{% endblock %}
+              <div class="chip">
+                <span class="subtle">Signed in</span>
+                <b>{{ name }}</b>
+              </div>
+            </div>
+          </div>
+
+          {% block content %}{% endblock %}
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+

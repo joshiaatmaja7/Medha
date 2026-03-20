@@ -1,0 +1,32 @@
+{% extends "base_app.html" %}
+
+{% block content %}
+  <div class="dashGrid">
+    <section class="card span12" aria-label="Focus">
+      <div class="cardHeader">
+        <h3>Focus</h3>
+        <span class="subtle">Pomodoro-style focus timer</span>
+      </div>
+      <div class="focusWrap" data-focus>
+        <div class="focusTimer">
+          <div class="focusLabel subtle">Time</div>
+          <div class="focusTime" data-focus-display>25:00</div>
+        </div>
+        <div class="focusControls">
+          <div class="row">
+            <div>
+              <label for="mins">Minutes</label>
+              <input id="mins" type="number" min="1" max="180" value="25" data-focus-minutes />
+            </div>
+          </div>
+          <div class="btnRow">
+            <button class="btn btnPrimary" type="button" data-focus-start>Start</button>
+            <button class="btn btnGhost" type="button" data-focus-pause>Pause</button>
+            <button class="btn btnGhost" type="button" data-focus-reset>Reset</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
